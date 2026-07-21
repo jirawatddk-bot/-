@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Facebook Isan Quote Team - Control Center</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🌾</div>
+        <div class="brand-text">
+          <h2>Isan AI Team</h2>
+          <span class="badge">Multi-Agent v1.0</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-tab="dashboard">
+          <span class="icon">📊</span> แดชบอร์ด (Dashboard)
+        </button>
+        <button class="nav-btn" data-tab="schedule">
+          <span class="icon">📅</span> ตั้งค่าหัวข้อ 7 วัน (Weekly Schedule)
+        </button>
+        <button class="nav-btn" data-tab="posts">
+          <span class="icon">📝</span> โพสต์ทั้งหมด (Posts)
+        </button>
+        <button class="nav-btn" data-tab="quotes">
+          <span class="icon">💡</span> คลังคำคมอีสาน (Quotes)
+        </button>
+        <button class="nav-btn" data-tab="analytics">
+          <span class="icon">📈</span> สถิติ & วิเคราะห์ (Analytics)
+        </button>
+        <button class="nav-btn" data-tab="logs">
+          <span class="icon">📟</span> ระบบ Log 7 Agents
+        </button>
+      </nav>
+
+      <div class="system-status-card">
+        <div class="status-indicator online"></div>
+        <div>
+          <div class="status-title">ระบบทำงาน 24/7</div>
+          <div class="status-subtitle" id="cron-schedule-display">Cron: 0 */6 * * *</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">ศูนย์ควบคุมทีม AI สร้างคำคมอีสาน</h1>
+          <p class="subtitle">ระบบอัตโนมัติ 100% จัดการแฟนเพจ Facebook คำคมอีสานบ้านเฮา</p>
+        </div>
+        <div class="header-actions">
+          <div class="custom-topic-wrapper">
+            <input type="text" id="custom-topic-input" class="input-topic" placeholder="พิมพ์กำหนดหัวข้อเองทันที (เว้นว่าง = ใช้ตามตาราง 7 วัน)" />
+            <button id="trigger-btn" class="btn btn-primary">
+              <span class="btn-icon">🚀</span> รันระบบทันที
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Tab -->
+      <section id="tab-dashboard" class="tab-content active">
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">โพสต์ทั้งหมด</span>
+              <span class="stat-icon">📮</span>
+            </div>
+            <div class="stat-value" id="stat-posts">0</div>
+            <div class="stat-foot">สร้างและโพสต์อัตโนมัติ</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">เข้าถึงคนอ่าน (Reach)</span>
+              <span class="stat-icon">👥</span>
+            </div>
+            <div class="stat-value" id="stat-reach">0</div>
+            <div class="stat-foot">ผู้เข้าชมหน้าเพจ</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">ยอดการกดถูกใจ (Likes)</span>
+              <span class="stat-icon">❤️</span>
+            </div>
+            <div class="stat-value" id="stat-likes">0</div>
+            <div class="stat-foot">ความประทับใจคำคม</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">อัตรามีส่วนร่วม (Engagement)</span>
+              <span class="stat-icon">🔥</span>
+            </div>
+            <div class="stat-value" id="stat-engagement">0.0%</div>
+            <div class="stat-foot">เฉลี่ยต่อโพสต์</div>
+          </div>
+        </div>
+
+        <!-- Agent Workflow Visualizer -->
+        <div class="card workflow-card">
+          <div class="card-header">
+            <h3>🤖 แผนผังการทำงาน 7 Agents (Live Pipeline)</h3>
+            <span class="live-pill">Autonomous</span>
+          </div>
+          <div class="agent-pipeline">
+            <div class="agent-box" id="agent-ceo">
+              <div class="agent-num">Agent 1</div>
+              <div class="agent-name">CEO Agent</div>
+              <div class="agent-role">Project Manager</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-planner">
+              <div class="agent-num">Agent 2</div>
+              <div class="agent-name">Content Planner</div>
+              <div class="agent-role">Strategist</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-quote">
+              <div class="agent-num">Agent 3</div>
+              <div class="agent-name">Quote Writer</div>
+              <div class="agent-role">Isan Creator</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-copywriter">
+              <div class="agent-num">Agent 4</div>
+              <div class="agent-name">Copywriter</div>
+              <div class="agent-role">FB Captions</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-image">
+              <div class="agent-num">Agent 5</div>
+              <div class="agent-name">Image Prompt</div>
+              <div class="agent-role">Visual Prompt</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-publisher">
+              <div class="agent-num">Agent 6</div>
+              <div class="agent-name">Publisher</div>
+              <div class="agent-role">FB Posting</div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="agent-box" id="agent-analytics">
+              <div class="agent-num">Agent 7</div>
+              <div class="agent-name">Analytics</div>
+              <div class="agent-role">Feedback Loop</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Posts & Live Logs Dual View -->
+        <div class="grid-2col">
+          <div class="card">
+            <div class="card-header">
+              <h3>✨ โพสต์ล่าสุดบน Facebook</h3>
+              <button class="btn-sm" onclick="fetchPosts()">รีเฟรช</button>
+            </div>
+            <div class="posts-list" id="latest-posts-container">
+              <div class="empty-state">ยังไม่มีข้อมูลโพสต์ กดรันระบบเพื่อสร้างโพสต์แรก</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>📟 บันทึกการทำงาน Agents (Real-time Logs)</h3>
+              <button class="btn-sm" onclick="fetchLogs()">รีเฟรช Log</button>
+            </div>
+            <div class="logs-feed" id="live-logs-container">
+              <div class="empty-state">กำลังโหลดบันทึกการทำงาน...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly Schedule Tab -->
+      <section id="tab-schedule" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>📅 กำหนดหัวข้อคำคมประจำวันล่วงหน้า (จันทร์ - อาทิตย์)</h3>
+            <button id="save-schedule-btn" class="btn btn-primary">💾 บันทึกตารางหัวข้อ</button>
+          </div>
+          <p class="subtitle" style="margin-bottom: 20px;">คุณสามารถพิมพ์กำหนดหัวข้อที่ต้องการให้ AI แต่งในแต่ละวันได้ล่วงหน้า เมื่อถึงวันนั้น AI จะสร้างคำคมตามหัวข้อที่คุณตั้งไว้ให้อัตโนมัติ</p>
+          <div class="schedule-form-grid" id="schedule-form-container"></div>
+        </div>
+      </section>
+
+      <!-- Posts Tab -->
+      <section id="tab-posts" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>รายการโพสต์ทั้งหมดในระบบ</h3>
+          </div>
+          <div class="posts-grid" id="all-posts-grid"></div>
+        </div>
+      </section>
+
+      <!-- Quotes Tab -->
+      <section id="tab-quotes" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>คลังคำคมอีสานแท้ (Original Isan Quotes Library)</h3>
+          </div>
+          <div class="quotes-grid" id="all-quotes-grid"></div>
+        </div>
+      </section>
+
+      <!-- Analytics Tab -->
+      <section id="tab-analytics" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>รายงานการวิเคราะห์และข้อเสนอแนะพัฒนาคอนเทนต์</h3>
+          </div>
+          <div id="analytics-detail-container" class="analytics-detail"></div>
+        </div>
+      </section>
+
+      <!-- Logs Tab -->
+      <section id="tab-logs" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>ประวัติการทำงานฉบับเต็ม (Full System Logs)</h3>
+          </div>
+          <div class="logs-feed full" id="full-logs-container"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
