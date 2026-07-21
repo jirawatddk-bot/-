@@ -1,0 +1,43 @@
+{
+  "name": "ai-facebook-isan-quote-team",
+  "version": "1.0.0",
+  "description": "Autonomous AI Multi-Agent System for Managing Facebook Isan Quote Page",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').cpSync('src/web/public', 'dist/web/public', {recursive: true})\" && node -e \"require('fs').cpSync('src/assets', 'dist/assets', {recursive: true})\"",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test:workflow": "ts-node src/scripts/test-workflow.ts",
+    "test:db": "ts-node src/scripts/test-db.ts"
+  },
+  "keywords": [
+    "ai",
+    "multi-agent",
+    "facebook",
+    "isan",
+    "quote",
+    "content-marketing",
+    "typescript"
+  ],
+  "author": "Antigravity AI",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.22.0",
+    "better-sqlite3": "^11.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-cron": "^3.0.3",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.10",
+    "@types/node-cron": "^3.0.11",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.3"
+  }
+}
