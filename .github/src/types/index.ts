@@ -57,6 +57,53 @@ export interface AnalyticsOutput {
   suggestions: string[];
 }
 
+// Trend Agent Data Contracts
+
+export interface TrendScoreBreakdown {
+  searchVolume: number; // 0-100
+  socialEngagement: number; // 0-100
+  growthRate: number; // 0-100
+  competition: number; // 0-100
+  relevanceToAudience: number; // 0-100
+  seasonalRelevance: number; // 0-100
+  contentFreshness: number; // 0-100
+}
+
+export type TrendPriority = 'High' | 'Medium' | 'Low';
+
+export interface ContentSuggestion {
+  topic: string;
+  whyTrending: string;
+  audienceIntent: string;
+  recommendedContentType: string;
+  recommendedPostingTime: string;
+  trendScore: number;
+}
+
+export interface TrendingTopicItem {
+  topic: string;
+  trendScore: number; // 0-100
+  priority: TrendPriority;
+  reason: string;
+  contentIdea: string;
+  targetAudience: string;
+  recommendedImageTheme: string;
+  hashtags: string[];
+  scoreBreakdown?: TrendScoreBreakdown;
+  contentSuggestion?: ContentSuggestion;
+}
+
+export interface TrendReportOutput {
+  date: string;
+  trendingTopics: TrendingTopicItem[];
+}
+
+export interface TrendAgentInput {
+  categories?: string[];
+  focusBreed?: string;
+  customDate?: string;
+}
+
 // CEO Workflow State & Execution Result
 
 export interface ValidationResult {

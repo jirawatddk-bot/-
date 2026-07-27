@@ -1,7 +1,7 @@
 import { BaseAgent } from '../base.agent';
 import { FullWorkflowResult, ValidationResult } from '../../types';
 import { ContentPlannerAgent } from '../planner/planner.agent';
-import { IsanQuoteWriterAgent } from '../quote_writer/quote_writer.agent';
+import { DogKnowledgeWriterAgent } from '../quote_writer/quote_writer.agent';
 import { FacebookCopywriterAgent } from '../copywriter/copywriter.agent';
 import { ImagePromptCreatorAgent } from '../image_prompt/image_prompt.agent';
 import { FacebookPublisherAgent } from '../publisher/publisher.agent';
@@ -19,7 +19,7 @@ export interface CEOExecuteOptions {
 
 export class CEOAgent extends BaseAgent<CEOExecuteOptions | undefined, FullWorkflowResult> {
   private planner: ContentPlannerAgent;
-  private quoteWriter: IsanQuoteWriterAgent;
+  private quoteWriter: DogKnowledgeWriterAgent;
   private copywriter: FacebookCopywriterAgent;
   private imagePromptCreator: ImagePromptCreatorAgent;
   private publisher: FacebookPublisherAgent;
@@ -28,7 +28,7 @@ export class CEOAgent extends BaseAgent<CEOExecuteOptions | undefined, FullWorkf
   constructor() {
     super('CEO Agent', 'Project Manager & Workflow Orchestrator');
     this.planner = new ContentPlannerAgent();
-    this.quoteWriter = new IsanQuoteWriterAgent();
+    this.quoteWriter = new DogKnowledgeWriterAgent();
     this.copywriter = new FacebookCopywriterAgent();
     this.imagePromptCreator = new ImagePromptCreatorAgent();
     this.publisher = new FacebookPublisherAgent();
@@ -45,20 +45,9 @@ export class CEOAgent extends BaseAgent<CEOExecuteOptions | undefined, FullWorkf
       customTopic: options?.customTopic,
     });
 
-    // Step 2: Quote Writer (with duplicate checking)
-    this.logInfo('Step 2: Invoking Isan Quote Writer Agent');
-    let quoteOutput = await this.quoteWriter.execute(plannerOutput);
-    let attempts = 0;
-
-    while (QuotesRepository.isDuplicate(quoteOutput.quoteIsan) && attempts < 3) {
-      attempts++;
-      this.logWarn('Duplicate Quote Detected by CEO! Requesting new quote', {
-        duplicateQuote: quoteOutput.quoteIsan,
-        attempt: attempts,
-      });
-      quoteOutput = await this.quoteWriter.execute(plannerOutput);
-    }
-
+    // Step 2: Dog Knowledge Writer
+    this.logInfo('Step 2: Invoking Dog Knowledge Writer Agent');
+    const quoteOutput = await this.quoteWriter.execute(plannerOutput);
     const quoteHash = QuotesRepository.generateHash(quoteOutput.quoteIsan);
 
     // Step 3: Facebook Copywriter
