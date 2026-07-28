@@ -35,7 +35,7 @@ const ISAN_QUOTE_SAMPLES: QuoteWriterOutput[] = [
     keywords: ['เงินเดือนออก', 'สิ้นเดือน', 'มีมฮาๆ'],
   },
   {
-    quoteIsan: 'กาแฟแก้วละร้อย\nเงินในกระเป๋าเหลือสิบ.',
+    quoteIsan: 'กาแฟแก้วละร้อย\nเหลือเงินแค่สิบบาท.',
     thaiMeaning: 'กาแฟแก้วละร้อย เงินในกระเป๋าเหลือสิบบาท',
     emotion: 'Funny Meme & Coffee',
     keywords: ['ค่ากาแฟ', 'มนุษย์เงินเดือน', 'มีมฮาๆ'],
@@ -55,12 +55,13 @@ Theme: "มีมคำคมฮาๆ" | Style: "อีสานกวนๆ" |
 
 STRICT FORMATTING & CONTENT RULES:
 1. Write EXACTLY 2 SHORT PUNCHY LINES (6-10 characters per line). Use \\n to split into 2 lines.
-2. End with a funny Isan Punchline!
-3. Target topics: สิ้นเดือน, เงินเดือนออก, เงินหมด, มนุษย์เงินเดือน, หนี้สิน, ของมันต้องมี, มาม่าปลายเดือน, ค่ากาแฟ, ค่าไฟ, รถผ่อน, วันหวยออก
-4. Example 1: "เงินเดือนออกเมื่อเช้า\\nตอนเย็นเข้าบัญชีคนอื่น."
-5. Example 2: "ของมันต้องมี\\nแต่หนี้กะต้องผ่อน."
-6. Provide exact Central Thai translation (คำแปลภาษาไทยกลางสั้นๆ).
-7. Theme must align with today's topic: "${planner.dailyTopic}".`;
+2. ALWAYS use explicit \\n to separate line 1 and line 2 so tone marks/vowels never break!
+3. End with a funny Isan Punchline!
+4. Target topics: สิ้นเดือน, เงินเดือนออก, เงินหมด, มนุษย์เงินเดือน, หนี้สิน, ของมันต้องมี, มาม่าปลายเดือน, ค่ากาแฟ, ค่าไฟ, รถผ่อน, วันหวยออก
+5. Example 1: "เงินเดือนออกเมื่อเช้า\\nตอนเย็นเข้าบัญชีคนอื่น."
+6. Example 2: "กาแฟแก้วละร้อย\\nเหลือเงินแค่สิบบาท."
+7. Provide exact Central Thai translation (คำแปลภาษาไทยกลางสั้นๆ).
+8. Theme must align with today's topic: "${planner.dailyTopic}".`;
 
     const userPrompt = `Topic: ${planner.dailyTopic}
 Audience Emotion: Funny Meme, Humorous, Relatable, Witty

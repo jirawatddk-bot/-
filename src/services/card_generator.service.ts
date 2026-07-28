@@ -19,7 +19,7 @@ export class CardGeneratorService {
     const height = 1080;
     const pageName = options.pageName || 'เพจ เว้าไปสั่นล่ะ';
 
-    // Word wrap quote cleanly into lines of max ~16 characters to prevent overflow
+    // Word wrap quote cleanly into lines using Thai grapheme clusters (never split vowels/tone marks)
     const lines = this.wrapText(options.quoteIsan, 16);
 
     // Calculate dynamic font size based on max line length & line count
@@ -99,34 +99,35 @@ export class CardGeneratorService {
     }
   }
 
+  /**
+   * Safe Thai grapheme cluster wrapper.
+   * Ensures vowels and tone marks are NEVER separated from base consonants!
+   */
   private static wrapText(text: string, maxCharsPerLine: number = 16): string[] {
+    // If text already has newline breaks \n, respect them first!
+    if (text.includes('\n')) {
+      return text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    }
+
     const rawWords = text.trim().split(/\s+/);
-    const words: string[] = [];
-
-    for (const word of rawWords) {
-      if (word.length <= maxCharsPerLine) {
-        words.push(word);
-      } else {
-        // Safely break long unbroken Thai phrases to avoid frame overflow
-        const chunkRegex = new RegExp(`.{1,${maxCharsPerLine}}`, 'g');
-        const chunks = word.match(chunkRegex) || [word];
-        words.push(...chunks);
-      }
-    }
-
     const lines: string[] = [];
-    let currentLine = '';
 
-    for (const word of words) {
-      if ((currentLine + ' ' + word).trim().length > maxCharsPerLine && currentLine.length > 0) {
-        lines.push(currentLine.trim());
-        currentLine = word;
-      } else {
-        currentLine = currentLine ? `${currentLine} ${word}` : word;
+    for (const rawWord of rawWords) {
+      // Extract indivisible Thai grapheme clusters (consonant + upper/lower vowels + tone marks)
+      const graphemeClusters = rawWord.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*/g) || [rawWord];
+      
+      let currentLine = '';
+      for (const g of graphemeClusters) {
+        if (currentLine.length + 1 > maxCharsPerLine && currentLine.length > 0) {
+          lines.push(currentLine.trim());
+          currentLine = g;
+        } else {
+          currentLine += g;
+        }
       }
-    }
-    if (currentLine.trim()) {
-      lines.push(currentLine.trim());
+      if (currentLine.trim()) {
+        lines.push(currentLine.trim());
+      }
     }
 
     return lines.length > 0 ? lines : [text];
