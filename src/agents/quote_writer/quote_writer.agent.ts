@@ -2,59 +2,62 @@ import { BaseAgent } from '../base.agent';
 import { PlannerOutput, QuoteWriterOutput } from '../../types';
 import { LLMService } from '../../services/llm.service';
 
-const DOG_KNOWLEDGE_SAMPLES: QuoteWriterOutput[] = [
+const ISAN_QUOTE_SAMPLES: QuoteWriterOutput[] = [
   {
-    quoteIsan: "หน้าฝนเปียกชื้น! อย่าลืมเช็ดอุ้งเท้าน้องหมาให้แห้งสนิทหลังเดินเล่น ป้องกันเชื้อราและโรคผิวหนังอักเสบ",
-    thaiMeaning: "หน้าฝนเปียกชื้น! อย่าลืมเช็ดอุ้งเท้าน้องหมาให้แห้งสนิทหลังเดินเล่น ป้องกันเชื้อราและโรคผิวหนังอักเสบ",
-    emotion: "Caring & Informative",
-    keywords: ["ดูแลสุนัขหน้าฝน", "เช็ดอุ้งเท้า", "ป้องกันเชื้อรา", "สุขภาพสุนัขพันธุ์เล็ก"],
+    quoteIsan: 'ชีวิตมันบ่มีคำว่าสบายตั้งแต่เกิด แต่เฮาเลือกสิสู้ให้มันซำบายในวันข้างหน้าได้',
+    thaiMeaning: 'ชีวิตไม่มีคำว่าสบายตั้งแต่เกิด แต่เราเลือกที่จะสู้ให้มันสบายในวันข้างหน้าได้',
+    emotion: 'Motivational & Strong',
+    keywords: ['สู้ชีวิต', 'กำลังใจ', 'คำคมอีสาน'],
   },
   {
-    quoteIsan: "สุนัขหน้าสั้น (French Bulldog/Pug) เสี่ยงฮีตสโตรกง่ายในฤดูร้อน! ควรให้อยู่ในห้องแอร์หรือพื้นที่ถ่ายเทสะดวก",
-    thaiMeaning: "สุนัขหน้าสั้น (French Bulldog/Pug) เสี่ยงฮีตสโตรกง่ายในฤดูร้อน! ควรให้อยู่ในห้องแอร์หรือพื้นที่ถ่ายเทสะดวก",
-    emotion: "Urgent & Educational",
-    keywords: ["ฮีตสโตรกในสุนัข", "FrenchBulldog", "สุนัขหน้าสั้น", "วิธีคลายร้อนสุนัข"],
+    quoteIsan: 'ความฮักกะคือการปลูกข้าว ต้องอดทนถ่าเวลา ถึงสิยากลำบากแต่ผลผลิตกะคุ้มค่า',
+    thaiMeaning: 'ความรักก็เหมือนการทำนาปลูกข้าว ต้องอดทนรอเวลา ถึงจะยากลำบากแต่ผลผลิตก็คุ้มค่า',
+    emotion: 'Wise & Romantic',
+    keywords: ['ความรัก', 'ทำนา', 'ความอดทน'],
   },
   {
-    quoteIsan: "ลูกสุนัขกัดเฟอร์นิเจอร์? ใช้ของเล่นยางสำหรับขัดฟัน และชวนเล่นเชิงบวก แทนการลงโทษด้วยความรุนแรง",
-    thaiMeaning: "ลูกสุนัขกัดเฟอร์นิเจอร์? ใช้ของเล่นยางสำหรับขัดฟัน และชวนเล่นเชิงบวก แทนการลงโทษด้วยความรุนแรง",
-    emotion: "Helpful & Encouraging",
-    keywords: ["ฝึกลูกสุนัข", "ลูกสุนัขคันฟัน", "การฝึกเชิงบวก", "ของเล่นสุนัข"],
+    quoteIsan: 'มื้อนี้เหนื่อยบ่เป็นหยัง ขอแค่ใจเฮาบ่ถอย พรุ่งนี้กะเป็นวันของเฮาคือเก่า',
+    thaiMeaning: 'วันนี้เหนื่อยไม่เป็นไร ขอแค่ใจเราไม่ถอย พรุ่งนี้ก็เป็นวันของเราเหมือนเดิม',
+    emotion: 'Encouraging & Warm',
+    keywords: ['กำลังใจ', 'ไม่ถอย', 'สู้ต่อไป'],
   },
 ];
 
-export class DogKnowledgeWriterAgent extends BaseAgent<PlannerOutput, QuoteWriterOutput> {
+export class IsanQuoteWriterAgent extends BaseAgent<PlannerOutput, QuoteWriterOutput> {
   constructor() {
-    super('Dog Knowledge Writer', 'Dog Expert & Pet Health Specialist');
+    super('Isan Quote Writer', 'Northeastern Thai (Isan) Dialect & Cultural Poet');
   }
 
   public async execute(planner: PlannerOutput): Promise<QuoteWriterOutput> {
-    this.logInfo('Writing Dog Knowledge Tip', { topic: planner.dailyTopic, emotion: planner.audienceEmotion });
+    this.logInfo('Writing Isan Quote', { topic: planner.dailyTopic, emotion: planner.audienceEmotion });
 
-    const systemPrompt = `คุณคือผู้เชี่ยวชาญด้านสุขภาพ พฤติกรรม และการดูแลสุนัขพันธุ์เล็ก (Dog Health & Behavior Specialist)
-หน้าที่ของคุณคือเขียน "สาระน่ารู้และทริคดูแลน้องหมา" ที่ถูกต้อง น่าสนใจ เข้าใจง่าย สำหรับคนรักสุนัขเพจ "โปรดเรียกผมว่า..นายท่านปั้น"
-ข้อกำหนด:
-1. ห้ามเขียนคำคมชีวิตหรือคำคมอีสานเด็ดขาด!
-2. เน้นเคล็ดลับดูแลสุนัขพันธุ์เล็ก (เช่น French Bulldog, Pomeranian, Poodle, Chihuahua)
-3. เขียนสั้น กระชับ อ่านจบใน 1-2 ประโยค เพื่อนำไปใส่ในภาพการ์ดความรู้น่ารักๆ`;
+    const systemPrompt = `You are a native Isan (Northeastern Thai) poet and quote creator for the Facebook page "เพจ เว้าไปสั่นล่ะ".
+Your duty is to compose 100% ORIGINAL, DEEP, TOUCHING, AND MEMORABLE Isan quotes (คำคมภาษาอีสานแท้).
+
+RULES:
+1. Write 1-2 punchy lines in authentic Isan dialect (ภาษาอีสาน).
+2. Provide exact Central Thai translation (คำแปลภาษาไทยกลาง).
+3. Theme must align with today's topic: "${planner.dailyTopic}".
+4. Make it viral, emotional, warm, and inspiring.`;
 
     const userPrompt = `Topic: ${planner.dailyTopic}
 Audience Emotion: ${planner.audienceEmotion}
 
 Return JSON with:
 {
-  "quoteIsan": "สาระน่ารู้สั้นๆ เรื่องน้องหมา 1-2 ประโยค",
-  "thaiMeaning": "คำอธิบายหรือที่มาของทริคนี้สั้นๆ",
+  "quoteIsan": "ข้อความคำคมภาษาอีสาน 1-2 ประโยคเด็ดๆ",
+  "thaiMeaning": "คำแปลความหมายภาษาไทยกลางสั้นๆ",
   "emotion": "${planner.audienceEmotion}",
-  "keywords": ["ดูแลสุนัข", "ทาสหมา", "สุนัขพันธุ์เล็ก"]
+  "keywords": ["คำคมอีสาน", "สู้ชีวิต", "กำลังใจ"]
 }`;
 
-    const fallbackIndex = Math.floor(Math.random() * DOG_KNOWLEDGE_SAMPLES.length);
-    const sample = DOG_KNOWLEDGE_SAMPLES[fallbackIndex];
+    const fallbackIndex = Math.floor(Math.random() * ISAN_QUOTE_SAMPLES.length);
+    const sample = ISAN_QUOTE_SAMPLES[fallbackIndex];
+    const timeTag = new Date().toLocaleTimeString('th-TH');
     const fallback: QuoteWriterOutput = {
       ...sample,
-      quoteIsan: sample.quoteIsan,
-      thaiMeaning: sample.thaiMeaning,
+      quoteIsan: `${sample.quoteIsan} (อัปเดต ${timeTag})`,
+      thaiMeaning: `${sample.thaiMeaning} (อัปเดต ${timeTag})`,
     };
 
     return await LLMService.generateJSON<QuoteWriterOutput>(systemPrompt, userPrompt, () => fallback);

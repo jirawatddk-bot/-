@@ -50,12 +50,12 @@ export class LLMService {
       }
     }
 
-    // 2. Gemini Integration (Secondary)
+    // 2. Gemini Integration (Primary)
     const gemini = this.getGemini();
-    if (gemini && provider === 'gemini') {
+    if (gemini && (provider === 'gemini' || !ENV.OPENAI_API_KEY)) {
       try {
         const model = gemini.getGenerativeModel({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-1.5-flash',
           generationConfig: {
             responseMimeType: 'application/json',
             temperature: 0.7,

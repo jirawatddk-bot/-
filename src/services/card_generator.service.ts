@@ -28,15 +28,18 @@ export class CardGeneratorService {
     const totalTextHeight = lines.length * lineHeight;
     const startY = (height - totalTextHeight) / 2 + fontSize * 0.8;
 
+    // Font family with comprehensive Linux + Windows + Mac Thai fallbacks
+    const fontFamily = "'Prompt', 'Kanit', 'Noto Sans Thai', 'Garuda', 'Kinnari', 'Loma', 'Sarabun', 'Leelawadee UI', sans-serif";
+
     // Create crisp white text with subtle dark shadow overlay for 100% legibility over sunset
     const textElements = lines
       .map((line, idx) => {
         const y = startY + idx * lineHeight;
         return `
           <!-- Dark Shadow Stroke for visibility -->
-          <text x="540" y="${y}" text-anchor="middle" font-family="'Prompt', 'Kanit', sans-serif" font-weight="700" font-size="${fontSize}px" fill="#000000" opacity="0.7" filter="url(#glow)">${this.escapeXml(line)}</text>
+          <text x="540" y="${y}" text-anchor="middle" font-family="${fontFamily}" font-weight="700" font-size="${fontSize}px" fill="#000000" opacity="0.8" filter="url(#glow)">${this.escapeXml(line)}</text>
           <!-- Crisp White Main Text -->
-          <text x="540" y="${y}" text-anchor="middle" font-family="'Prompt', 'Kanit', sans-serif" font-weight="700" font-size="${fontSize}px" fill="#ffffff">${this.escapeXml(line)}</text>
+          <text x="540" y="${y}" text-anchor="middle" font-family="${fontFamily}" font-weight="700" font-size="${fontSize}px" fill="#ffffff">${this.escapeXml(line)}</text>
         `;
       })
       .join('\n');
@@ -63,7 +66,7 @@ export class CardGeneratorService {
       </g>
 
       <!-- Bottom Page Watermark -->
-      <text x="540" y="990" text-anchor="middle" font-family="'Prompt', 'Kanit', sans-serif" font-weight="400" font-size="28px" fill="#ffffff" opacity="0.9" letter-spacing="1.5">${this.escapeXml(pageName)}</text>
+      <text x="540" y="990" text-anchor="middle" font-family="${fontFamily}" font-weight="400" font-size="28px" fill="#ffffff" opacity="0.9" letter-spacing="1.5">${this.escapeXml(pageName)}</text>
     </svg>
     `;
 
