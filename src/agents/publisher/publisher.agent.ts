@@ -30,10 +30,10 @@ export class FacebookPublisherAgent extends BaseAgent<PublisherInput, PublisherO
     const fullCaption = parts.join('\n\n');
 
     try {
-      // Generate Quote Card PNG using the template
+      // Generate Quote Card PNG using the template with exact watermark
       const cardBuffer = await CardGeneratorService.generateQuoteCard({
         quoteIsan: input.quote.quoteIsan,
-        pageName: 'เพจ โปรดเรียกผมว่า..นายท่านปั้น',
+        pageName: 'เพจ เว้าไปสั่นล่ะ',
       });
 
       this.logInfo('Quote Card PNG generated successfully', { postId: input.postId, size: cardBuffer.length });
