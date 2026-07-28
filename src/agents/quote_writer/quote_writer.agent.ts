@@ -53,11 +53,10 @@ Return JSON with:
 
     const fallbackIndex = Math.floor(Math.random() * ISAN_QUOTE_SAMPLES.length);
     const sample = ISAN_QUOTE_SAMPLES[fallbackIndex];
-    const timeTag = new Date().toLocaleTimeString('th-TH');
     const fallback: QuoteWriterOutput = {
       ...sample,
-      quoteIsan: `${sample.quoteIsan} (อัปเดต ${timeTag})`,
-      thaiMeaning: `${sample.thaiMeaning} (อัปเดต ${timeTag})`,
+      quoteIsan: sample.quoteIsan,
+      thaiMeaning: sample.thaiMeaning,
     };
 
     return await LLMService.generateJSON<QuoteWriterOutput>(systemPrompt, userPrompt, () => fallback);
