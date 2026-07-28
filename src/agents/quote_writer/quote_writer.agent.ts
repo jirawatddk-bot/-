@@ -1,6 +1,7 @@
 import { BaseAgent } from '../base.agent';
 import { PlannerOutput, QuoteWriterOutput } from '../../types';
 import { LLMService } from '../../services/llm.service';
+import { QuotesRepository } from '../../database/repositories/quotes.repo';
 
 const ISAN_QUOTE_SAMPLES: QuoteWriterOutput[] = [
   {
@@ -20,6 +21,24 @@ const ISAN_QUOTE_SAMPLES: QuoteWriterOutput[] = [
     thaiMeaning: 'วันนี้เหนื่อยไม่เป็นไร ขอแค่ใจเราไม่ถอย พรุ่งนี้ก็เป็นวันของเราเหมือนเดิม',
     emotion: 'Encouraging & Warm',
     keywords: ['กำลังใจ', 'ไม่ถอย', 'สู้ต่อไป'],
+  },
+  {
+    quoteIsan: 'ฮักแท้บ่แม่นการครอบครอง แต่คือการเห็นคนที่เฮาฮักมีความสุขยิ้มได้ในทุกวัน',
+    thaiMeaning: 'รักแท้ไม่ใช่การครอบครอง แต่คือการเห็นคนที่เรารักมีความสุขยิ้มได้ในทุกวัน',
+    emotion: 'Heartwarming',
+    keywords: ['รักแท้', 'ความสุข', 'ความฮัก'],
+  },
+  {
+    quoteIsan: 'ก้าวเล็กๆ ในวันนี้ ดีกว่ายืนอยู่ที่เดิมบ่ได้เริ่มทำอะไรเลยสักอย่าง',
+    thaiMeaning: 'ก้าวเล็กๆ ในวันนี้ ดีกว่ายืนอยู่ที่เดิมไม่ได้เริ่มทำอะไรเลยสักอย่าง',
+    emotion: 'Inspiring',
+    keywords: ['เริ่มต้นใหม่', 'กำลังใจ', 'ข้อคิด'],
+  },
+  {
+    quoteIsan: 'ฮักเขาข้างเดียวถึงสิเจ็บ แต่กะดีกว่าบ่เคยฮู้จักความฮักเลยในชีวิต',
+    thaiMeaning: 'รักเขาข้างเดียวถึงจะเจ็บ แต่ก็ดีกว่าไม่เคยรู้จักความรักเลยในชีวิต',
+    emotion: 'Romantic Melancholy',
+    keywords: ['แอบรัก', 'ความรัก', 'ข้อคิด'],
   },
 ];
 
@@ -51,8 +70,16 @@ Return JSON with:
   "keywords": ["คำคมอีสาน", "สู้ชีวิต", "กำลังใจ"]
 }`;
 
-    const fallbackIndex = Math.floor(Math.random() * ISAN_QUOTE_SAMPLES.length);
-    const sample = ISAN_QUOTE_SAMPLES[fallbackIndex];
+    // Filter out samples that are already posted in DB
+    const nonDuplicates = ISAN_QUOTE_SAMPLES.filter(sample => {
+      const hash = QuotesRepository.generateHash(sample.quoteIsan);
+      return !QuotesRepository.isDuplicate(hash);
+    });
+
+    const pool = nonDuplicates.length > 0 ? nonDuplicates : ISAN_QUOTE_SAMPLES;
+    const fallbackIndex = Math.floor(Math.random() * pool.length);
+    const sample = pool[fallbackIndex];
+
     const fallback: QuoteWriterOutput = {
       ...sample,
       quoteIsan: sample.quoteIsan,

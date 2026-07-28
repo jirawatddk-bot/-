@@ -19,11 +19,20 @@ export class CardGeneratorService {
     const height = 1080;
     const pageName = options.pageName || 'เพจ เว้าไปสั่นล่ะ';
 
-    // Word wrap quote into lines of ~18-22 characters
-    const lines = this.wrapText(options.quoteIsan, 20);
+    // Word wrap quote cleanly into lines of max ~16 characters to prevent overflow
+    const lines = this.wrapText(options.quoteIsan, 16);
 
-    // Calculate vertical centering
-    const fontSize = lines.length > 3 ? 50 : 60;
+    // Calculate dynamic font size based on max line length & line count
+    const maxLineLen = Math.max(...lines.map(l => l.length));
+    let fontSize = 52;
+    if (maxLineLen > 22) {
+      fontSize = 38;
+    } else if (maxLineLen > 16) {
+      fontSize = 44;
+    } else if (lines.length > 3) {
+      fontSize = 46;
+    }
+
     const lineHeight = fontSize * 1.5;
     const totalTextHeight = lines.length * lineHeight;
     const startY = (height - totalTextHeight) / 2 + fontSize * 0.8;
@@ -37,7 +46,7 @@ export class CardGeneratorService {
         const y = startY + idx * lineHeight;
         return `
           <!-- Dark Shadow Stroke for visibility -->
-          <text x="540" y="${y}" text-anchor="middle" font-family="${fontFamily}" font-weight="700" font-size="${fontSize}px" fill="#000000" opacity="0.8" filter="url(#glow)">${this.escapeXml(line)}</text>
+          <text x="540" y="${y}" text-anchor="middle" font-family="${fontFamily}" font-weight="700" font-size="${fontSize}px" fill="#000000" opacity="0.85" filter="url(#glow)">${this.escapeXml(line)}</text>
           <!-- Crisp White Main Text -->
           <text x="540" y="${y}" text-anchor="middle" font-family="${fontFamily}" font-weight="700" font-size="${fontSize}px" fill="#ffffff">${this.escapeXml(line)}</text>
         `;
@@ -90,17 +99,30 @@ export class CardGeneratorService {
     }
   }
 
-  private static wrapText(text: string, maxChars: number): string[] {
-    const words = text.split(' ');
+  private static wrapText(text: string, maxCharsPerLine: number = 16): string[] {
+    const rawWords = text.trim().split(/\s+/);
+    const words: string[] = [];
+
+    for (const word of rawWords) {
+      if (word.length <= maxCharsPerLine) {
+        words.push(word);
+      } else {
+        // Safely break long unbroken Thai phrases to avoid frame overflow
+        const chunkRegex = new RegExp(`.{1,${maxCharsPerLine}}`, 'g');
+        const chunks = word.match(chunkRegex) || [word];
+        words.push(...chunks);
+      }
+    }
+
     const lines: string[] = [];
     let currentLine = '';
 
     for (const word of words) {
-      if ((currentLine + word).length > maxChars && currentLine.length > 0) {
+      if ((currentLine + ' ' + word).trim().length > maxCharsPerLine && currentLine.length > 0) {
         lines.push(currentLine.trim());
-        currentLine = word + ' ';
+        currentLine = word;
       } else {
-        currentLine += word + ' ';
+        currentLine = currentLine ? `${currentLine} ${word}` : word;
       }
     }
     if (currentLine.trim()) {
